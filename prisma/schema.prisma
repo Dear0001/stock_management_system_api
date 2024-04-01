@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Categories {
+  id            Int        @id @default(autoincrement())
+  category_name String     @db.VarChar(50)
+  Products      Products[]
+}
+
+model Products {
+  product_id   Int        @id @default(autoincrement())
+  category_id  Int
+  product_name String     @unique @db.VarChar(100)
+  price        Float
+  category     Categories @relation(fields: [category_id], references: [id])
+  Orders       Orders[]
+
+  @@index([category_id], name: "idx_products_category_id")
+}
+
+model Orders {
+  order_id    Int       @id @default(autoincrement())
+  customer_id Int
+  product_id  Int
+  order_total Float
+  order_qty   Int
+  order_date  DateTime  @default(now())
+  Customer    Customers @relation(fields: [customer_id], references: [customer_id])
+  Product     Products  @relation(fields: [product_id], references: [product_id])
+
+  @@index([customer_id], name: "idx_orders_customer_id")
+  @@index([product_id], name: "idx_orders_product_id")
+}
+
+model Customers {
+  customer_id Int      @id @default(autoincrement())
+  first_name  String   @db.VarChar(100)
+  last_name   String   @db.VarChar(100)
+  birth_date  DateTime
+  money_spent Float
+  Orders      Orders[]
+}
