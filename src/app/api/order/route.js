@@ -24,7 +24,7 @@ export async function POST(req) {
 
         if (!product) {
             return NextResponse.json({
-                status: 404,
+                   status: 404,
                 message: `Product with id ${product_id} not found.`
             });
         }
@@ -49,8 +49,7 @@ export async function POST(req) {
         console.error(error);
         return NextResponse.json({
             status: 500,
-            message: "Internal Server Error.",
-            payload: error
+            message: "Internal Server Error."
         });
     }
 }

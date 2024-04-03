@@ -13,14 +13,22 @@ export async function GET() {
 }
 
 export async function POST(req) {
-    const body = await req.json();
-    const {category_name} = body;
-    const newCategories = await prisma.categories.createMany({
-        data: category_name
-    });
-    return NextResponse.json({
-        status: 200,
-        message: "Created categories successful",
-        payload: newCategories,
-    });
+    try{
+        const body = await req.json();
+        const {category_name} = body;
+        const newCategories = await prisma.categories.createMany({
+            data: category_name
+        });
+        return NextResponse.json({
+            status: 200,
+            message: "Created categories successful",
+            payload: newCategories,
+        });
+    }catch(error){
+        return NextResponse.json({
+            status: 404,
+            message: "Category  cannot create"
+        });
+    }
+
 }

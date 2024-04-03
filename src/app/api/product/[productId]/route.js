@@ -81,22 +81,56 @@ export async function PUT(req, { params: { productId } }) {
 
 //delete product by id
 
-export async function DELETE(req, {params:{productId}}){
+// export async function DELETE(req, {params:{productId}}){
+//     try {
+//         const deletedById = await prisma.products.delete({
+//             where:{
+//                 product_id: +productId
+//             }
+//         });
+//         return NextResponse.json({
+//             status:200,
+//             message: `Product with id ${productId} is deleted successfully.`
+//         })
+//     }catch (error){
+//         return NextResponse.json({
+//             status:404,
+//             message: `Product with id ${productId} isn't found.`
+//         })
+//     }
+// }
+export async function DELETE(req, {params: {productId}}) {
     try {
-        const deletedById = await prisma.products.delete({
-            where:{
-                product_id: +productId
+        const orders = await prisma.orders.findMany({
+            where: {
+                product_id: parseInt(productId)
             }
         });
+
+        if (orders.length > 0) {
+            return NextResponse.json({
+                status: 409,
+                message: `Product with id ${productId} cannot be deleted as they have existing orders.`,
+                orders: orders
+            });
+        }
+
+        const body = await prisma.customers.delete({
+            where: {
+                product_id: parseInt(productId)
+            }
+        });
+
         return NextResponse.json({
-            status:200,
-            message: `Product with id ${productId} is deleted successfully.`
-        })
-    }catch (error){
+            status: 200,
+            message: `Product with id ${productId} is deleted successfully.`,
+            payload: body
+        });
+    } catch (error) {
         return NextResponse.json({
-            status:404,
-            message: `Product with id ${productId} isn't found.`
-        })
+            status: 404,
+            message: `Product with id ${productId} not found.`
+        });
     }
 }
 

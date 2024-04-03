@@ -59,17 +59,32 @@ export async function PUT(req, {params: {customerId} }) {
 
 export async function DELETE(req, {params: {customerId }}) {
     try {
+        const orders = await prisma.orders.findMany({
+            where: {
+                customer_id: parseInt(customerId)
+            }
+        });
+
+        if (orders.length > 0) {
+            return NextResponse.json({
+                status: 409,
+                message: `Customer with id ${customerId} cannot be deleted as they have existing orders.`,
+                orders: orders
+            });
+        }
+
         const body = await prisma.customers.delete({
             where: {
                 customer_id: parseInt(customerId)
             }
         });
+
         return NextResponse.json({
             status: 200,
             message: `Customer with id ${customerId} is deleted successfully.`,
             payload: body
         });
-    }catch (error){
+    } catch (error) {
         return NextResponse.json({
             status: 404,
             message: `Customer with id ${customerId} not found.`
