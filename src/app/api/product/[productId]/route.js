@@ -52,6 +52,7 @@ export async function GET(req, { params: { productId } }) {
 }
 
 //Put
+
 export async function PUT(req, { params: { productId } }) {
     const body = await req.json();
     const {product_name, category_id, price} = body;
