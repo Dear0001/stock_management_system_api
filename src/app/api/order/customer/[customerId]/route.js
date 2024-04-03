@@ -10,9 +10,18 @@ export async function GET(req, { params: { customerId } }) {
         //     category: true
         // }
     });
+    if (body.length === 0) {
+        return NextResponse.json({
+            status: 404,
+            message: `Order customer by id ${customerId} not found.`
+        });
+
+    }else {
         return NextResponse.json({
             status: 200,
             message: `Get order by customer  id ${customerId} Successfully.`,
             payload: body
         });
+    }
+
 }
