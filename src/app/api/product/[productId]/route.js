@@ -81,24 +81,6 @@ export async function PUT(req, { params: { productId } }) {
 
 //delete product by id
 
-// export async function DELETE(req, {params:{productId}}){
-//     try {
-//         const deletedById = await prisma.products.delete({
-//             where:{
-//                 product_id: +productId
-//             }
-//         });
-//         return NextResponse.json({
-//             status:200,
-//             message: `Product with id ${productId} is deleted successfully.`
-//         })
-//     }catch (error){
-//         return NextResponse.json({
-//             status:404,
-//             message: `Product with id ${productId} isn't found.`
-//         })
-//     }
-// }
 export async function DELETE(req, {params: {productId}}) {
     try {
         const orders = await prisma.orders.findMany({
