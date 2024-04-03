@@ -13,6 +13,7 @@ export async function GET() {
 }
 
 export async function POST(req) {
+    try {
         const body = await req.json();
         const {first_name, last_name, birth_date, money_spent} = body;
         const newCustomers = await prisma.customers.create({
@@ -28,4 +29,11 @@ export async function POST(req) {
             message: "Created customers successfully.",
             payload: newCustomers
         });
+    }catch (error){
+        return NextResponse.json({
+            status: 404,
+            message: "Customer cannot create"
+        });
+    }
+
 }
